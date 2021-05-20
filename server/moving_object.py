@@ -22,3 +22,6 @@ class MovingObject:
 
     def getY(self):
         return self.y
+
+    def get_draw_details(self):
+        return (self.x, self.y, self.width, self.height)

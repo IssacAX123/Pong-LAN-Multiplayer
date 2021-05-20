@@ -1,6 +1,8 @@
 import threading
 import socket
 from game import Game
+import pickle
+
 SERVER = "192.168.1.7"
 PORT = 5555
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -15,7 +17,22 @@ games = {}
 idCount = 0
 
 def threaded_client(connection, player, gameID):
-    pass
+    connection.send(pickle.dumps(games[gameID].getPlayer(player)))
+    while True:
+        data = None
+        try:
+            data = pickle.loads(connection.recv(4096))
+        except Exception as e:
+            print(e)
+        if not data:
+            games[gameID].revert_ready()
+            break
+        else:
+            games[gameID].setPlayer(player, data)
+            games[gameID].move_ball()
+
+        connection.sendall(pickle.dumps(games[gameID]))
+
 
 
 while True:
@@ -28,6 +45,8 @@ while True:
         games[gameID] = Game(gameID)
         print("created game ", gameID)
     else:
-        games[gameID].ready()
+        games[gameID].revert_ready()
         player = 1
+
+    threading.Thread(target=threaded_client, args=(connection, player, gameID))
 
