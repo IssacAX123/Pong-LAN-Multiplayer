@@ -12,7 +12,7 @@ class Ball(MovingObject):
             player1.getY() <= self.y <= player1.getY() + player1.getHeight()) or \
                 self.x >= player2.getX() and \
                 player2.getY() <= self.y <= player2.getY() + player2.getHeight():
-
+            print("ball", self.x, self.y, self.velocity_vector)
             self.calcCollisionVelocity()
             self.move()
         else:
@@ -26,8 +26,10 @@ class Ball(MovingObject):
 
     def calcCollisionVelocity(self):
         ball_theta = self.calcDirection()
-        self.velocity_vector[0] = (-1 * 3 * 1) / (math.cos(ball_theta))
-        self.velocity_vector[1] = (-1 * 3 * 1) / (math.sin(ball_theta))
+        if ball_theta == 0 or ball_theta ==360 or ball_theta == 180:
+            ball_theta += 1
+        self.velocity_vector[0] = (-1 * 3 * 1) / ((math.cos(ball_theta)) if not 0 else 0.001)
+        self.velocity_vector[1] = (-1 * 3 * 1) / ((math.sin(ball_theta)) if not 0 else 0.001)
 
     def calcDirection(self):
         theta = 0.0
