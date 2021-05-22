@@ -38,8 +38,9 @@ def threaded_client(connection, player, gameID):
                 games[gameID].revert_ready()
                 break
             else:
-                games[gameID].setPlayer(player, json_data)
-                games[gameID].move_ball()
+                if games[gameID].connected():
+                    games[gameID].setPlayer(player, json_data)
+                    games[gameID].move_ball()
             game_json_encoder = games[gameID].encode_json
             connection.sendall((json.dumps(games[gameID], indent=4, default=game_json_encoder)).encode("utf-8"))
         except Exception as e:

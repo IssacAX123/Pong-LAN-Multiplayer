@@ -7,9 +7,11 @@ import json
 class Game:
     def __init__(self, gameId, players, ball, points):
         self.gameID = gameId
+        print(players, type(players))
         self.players = [json.loads(player) for player in players]
         self.ball = json.loads(ball)
-        self.points = points
+        print(points, type(points))
+        self.points = json.loads(points)
 
 
     def getScore(self):
@@ -31,7 +33,7 @@ class Game:
         return {"gameID": players.gameID, "players": [json.dumps(x, indent=4, default=x.encode_json) for x in
                                                       self.players],
                 "ball": json.dumps(self.ball, indent=4, default=self.ball.encode_json),
-                "points": players.points}
+                "points": json.dumps(players.points, indent=4)}
 
 
 

@@ -8,9 +8,9 @@ class Game:
     def __init__(self, gameId):
         self.ready = False
         self.gameID = gameId
-        self.players = [Player(0, 262, 10, 50, 0), Player(858-10, 262, 10, 50, 1)]
-        direction = random.randint(-1,1)
-        self.ball = Ball(429-5, 262-25, 5, 5, direction * 5, 0)
+        self.players = [Player(5, 262, 25, 95, 0), Player(858-30, 262, 25, 95, 1)]
+        direction = [-1, 1]
+        self.ball = Ball(429-5, 262-25, 10, 10, direction[random.randint(0, 1)] * 4, direction[random.randint(0, 1)] * 1)
         self.points = [0, 0]
 
     def revert_ready(self):
@@ -21,13 +21,6 @@ class Game:
 
     def movePlayer(self, playerID, velocity):
         self.players[playerID].moveY(velocity)
-
-    def reinitialize_ball(self):
-        self.ball.x = 429-5
-        self.ball.y = 262-25
-        direction = random.randint(-1, 1)
-        self.ball.x_vel = direction * 5
-        self.ball.y_vel = 0
 
     def getScore(self):
         return self.points
@@ -45,16 +38,20 @@ class Game:
         return self.ball
 
     def move_ball(self):
-        self.ball.enviroment_move(self.players[0], self.players[1])
+        scored, player = self.ball.enviroment_move(self.players[0], self.players[1])
+        if scored:
+            if player.id == 0:
+                self.points[0] += 1
+            elif player.id == 1:
+                self.points[1] += 1
 
-    def update_scores(self):
-        pass
+
 
     def encode_json(self, players):
         return {"gameID": players.gameID, "players": [json.dumps(x, indent=4, default=x.encode_json) for x in
                                                       self.players],
                 "ball": json.dumps(self.ball, indent=4, default=self.ball.encode_json),
-                "points": players.points, "connected": str(players.ready).lower()}
+                "points": json.dumps(players.points, indent=4), "connected": str(players.ready).lower()}
 
 
 

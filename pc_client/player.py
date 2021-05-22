@@ -9,6 +9,10 @@ class Player(MovingObject):
         self.wins = 0
         super().__init__(x, y, width, height)
 
+    def moveY(self, velocity):
+        if 520 - self.height > self.y + velocity > 5:
+            self.y += velocity
+
     def draw_win(self, win, playerID):
         text = font.render(str(self.wins), 1, (255, 255, 255))
         if playerID == 0:
